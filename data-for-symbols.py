@@ -20,17 +20,17 @@ class Generator:
             symbol=symbol,
             price=num,
             sec=num,
-            ms=num) for num, symbol in enumerate(symbols)])
+            ms=num) for num, symbol in enumerate(self._symbols, start=1)])
 
     def to_file(self, path):
-        with gzip.open(path, "wb", compresslevel=9) as f:
-            f.write(self.generate())
+        with gzip.open(path, "w", compresslevel=9) as f:
+            f.write(bytes(self.generate(), 'UTF-8'))
 
 def main(inpath, outpath):
-    in_symbols = [symbol.strip() for symbol in inpath.read()]
+    in_symbols = [symbol.strip() for symbol in open(inpath).readlines()]
     generator = Generator(in_symbols)
 
-    to_file(out_path)
+    generator.to_file(outpath)
 
 if __name__ == '__main__':
     main(argv[1], argv[2])
